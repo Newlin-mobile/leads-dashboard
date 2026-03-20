@@ -1,7 +1,8 @@
 import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import db, { generateId } from './db';
+import { validateApiKey } from './api-keys';
 
 if (!process.env.JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required. Generate one with: openssl rand -hex 32');
@@ -79,15 +80,40 @@ export async function clearSession(): Promise<void> {
 }
 
 export async function getCurrentUser(): Promise<User | null> {
+  // Try session cookie first
   const session = await getSession();
-  if (!session) return null;
-
-  const user = db.prepare(`
-    SELECT id, email, name, role, is_active, created_at
-    FROM users WHERE id = ? AND is_active = 1
-  `).get(session.userId) as User | undefined;
-
-  return user || null;
+  if (session) {
+    const user = db.prepare(`
+      SELECT id, email, name, role, is_active, created_at
+      FROM users WHERE id = ? AND is_active = 1
+    `).get(session.userId) as User | undefined;
+    
+    if (user) return user;
+  }
+  
+  // Try Bearer token (API key)
+  try {
+    const headersList = await headers();
+    const authHeader = headersList.get('authorization');
+    
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      const apiKeyData = validateApiKey(token);
+      
+      if (apiKeyData) {
+        const user = db.prepare(`
+          SELECT id, email, name, role, is_active, created_at
+          FROM users WHERE id = ? AND is_active = 1
+        `).get(apiKeyData.userId) as User | undefined;
+        
+        return user || null;
+      }
+    }
+  } catch {
+    // Headers not available (not in request context)
+  }
+  
+  return null;
 }
 
 export async function registerUser(
