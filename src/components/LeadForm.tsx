@@ -12,6 +12,7 @@ interface Lead {
   status: string;
   value_type: string;
   value_amount: number;
+  follow_up_date?: string | null;
 }
 
 interface LeadFormProps {
@@ -27,6 +28,7 @@ export function LeadForm({ lead, onSubmit, onCancel, loading }: LeadFormProps) {
   const [status, setStatus] = useState(lead?.status || 'wacht');
   const [valueType, setValueType] = useState(lead?.value_type || 'tbd');
   const [valueAmount, setValueAmount] = useState(lead?.value_amount?.toString() || '0');
+  const [followUpDate, setFollowUpDate] = useState(lead?.follow_up_date || '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,7 @@ export function LeadForm({ lead, onSubmit, onCancel, loading }: LeadFormProps) {
       status,
       value_type: valueType,
       value_amount: parseFloat(valueAmount) || 0,
+      follow_up_date: followUpDate || null,
     });
   };
 
@@ -94,6 +97,18 @@ export function LeadForm({ lead, onSubmit, onCancel, loading }: LeadFormProps) {
             placeholder="0.00"
           />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Opvolging datum
+          <span className="text-gray-500 text-xs ml-1">(optioneel - voor reminders)</span>
+        </label>
+        <Input
+          type="date"
+          value={followUpDate}
+          onChange={(e) => setFollowUpDate(e.target.value)}
+        />
       </div>
 
       <div className="flex justify-end space-x-3 pt-4">

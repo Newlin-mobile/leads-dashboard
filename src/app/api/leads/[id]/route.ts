@@ -43,7 +43,7 @@ export async function PUT(
     if (!existing) return apiError('Lead not found', 404);
 
     const body = await request.json();
-    const { name, source, status, value_type, value_amount } = body;
+    const { name, source, status, value_type, value_amount, follow_up_date } = body;
 
     if (name !== undefined && (typeof name !== 'string' || name.trim().length < 1)) {
       return apiError('Lead name cannot be empty');
@@ -62,13 +62,14 @@ export async function PUT(
     }
 
     const updates: string[] = [];
-    const values: (string | number)[] = [];
+    const values: (string | number | null)[] = [];
 
     if (name !== undefined) { updates.push('name = ?'); values.push(name.trim()); }
     if (source !== undefined) { updates.push('source = ?'); values.push(source); }
     if (status !== undefined) { updates.push('status = ?'); values.push(status); }
     if (value_type !== undefined) { updates.push('value_type = ?'); values.push(value_type); }
     if (value_amount !== undefined) { updates.push('value_amount = ?'); values.push(value_amount); }
+    if (follow_up_date !== undefined) { updates.push('follow_up_date = ?'); values.push(follow_up_date || null); }
 
     if (updates.length === 0) {
       return apiError('No fields to update');

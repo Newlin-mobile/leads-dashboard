@@ -25,7 +25,6 @@ export function Sidebar({ user }: SidebarProps) {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Leads', href: '/dashboard/leads', icon: Users },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
 
   const isActive = (href: string) => {

@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     if (!user) return apiError('Authentication required', 401);
 
     const body = await request.json();
-    const { name, source, status, value_type, value_amount } = body;
+    const { name, source, status, value_type, value_amount, follow_up_date } = body;
 
     if (!name || typeof name !== 'string' || name.trim().length < 1) {
       return apiError('Lead name is required');
@@ -61,13 +61,14 @@ export async function POST(request: NextRequest) {
     const leadStatus = status && VALID_STATUSES.includes(status) ? status : 'wacht';
     const leadValueType = value_type && VALID_VALUE_TYPES.includes(value_type) ? value_type : 'tbd';
     const leadValueAmount = typeof value_amount === 'number' && value_amount >= 0 ? value_amount : 0;
+    const followUpDate = follow_up_date || null;
 
     const leadId = generateId();
 
     db.prepare(`
-      INSERT INTO leads (id, user_id, name, source, status, value_type, value_amount)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(leadId, user.id, name.trim(), source, leadStatus, leadValueType, leadValueAmount);
+      INSERT INTO leads (id, user_id, name, source, status, value_type, value_amount, follow_up_date)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(leadId, user.id, name.trim(), source, leadStatus, leadValueType, leadValueAmount, followUpDate);
 
     const lead = db.prepare('SELECT * FROM leads WHERE id = ?').get(leadId);
 

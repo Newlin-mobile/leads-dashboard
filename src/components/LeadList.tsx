@@ -48,6 +48,8 @@ export function LeadList({ leads: initialLeads }: LeadListProps) {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error('Failed to create lead');
+      const result = await res.json();
+      setLeads([result.lead, ...leads]); // Add new lead to top of list
       setShowCreateModal(false);
       router.refresh();
     } finally {
