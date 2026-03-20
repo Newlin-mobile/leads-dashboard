@@ -8,6 +8,7 @@ import {
   Users,
   Settings,
   Home,
+  BarChart3,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -25,6 +26,7 @@ export function Sidebar({ user }: SidebarProps) {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Leads', href: '/dashboard/leads', icon: Users },
+    { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   ];
 
   const isActive = (href: string) => {
