@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToastError, useToastSuccess } from '@/components/ui/Toast';
 
-const appName = process.env.NEXT_PUBLIC_APP_NAME || 'MyTool';
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,66 +29,35 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || 'Login mislukt');
       }
 
-      showSuccess('Login successful', 'Welcome back!');
+      showSuccess('Ingelogd', 'Welkom terug!');
       router.push('/dashboard');
       router.refresh();
     } catch (error) {
-      showError('Login failed', error instanceof Error ? error.message : 'Please try again');
+      showError('Login mislukt', error instanceof Error ? error.message : 'Probeer opnieuw');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-primary">
-        <div className="flex items-center justify-center w-full p-12">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-6">{appName}</h1>
-            <p className="text-xl text-purple-100 max-w-md">
-              The developer tool that helps you build better software, faster.
-            </p>
-            <div className="mt-12 space-y-4 text-left max-w-md">
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-white rounded-full mr-3" />
-                <span>Lightning fast development</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-white rounded-full mr-3" />
-                <span>Enterprise-grade security</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-white rounded-full mr-3" />
-                <span>24/7 support</span>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            Leads Dashboard
+          </h1>
+          <h2 className="mt-4 text-3xl font-bold text-gray-900">Inloggen</h2>
+          <p className="mt-2 text-gray-600">Log in om je leads te beheren</p>
         </div>
-      </div>
 
-      {/* Right side - Login form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <Link href="/" className="text-2xl font-bold text-gradient-primary lg:hidden">
-              {appName}
-            </Link>
-            <h2 className="mt-6 text-3xl font-bold text-gray-900">
-              Welcome back
-            </h2>
-            <p className="mt-2 text-gray-600">
-              Sign in to your account to continue
-            </p>
-          </div>
-
+        <div className="bg-white rounded-lg shadow-sm border p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email address
+                Email
               </label>
               <Input
                 id="email"
@@ -99,14 +66,13 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="w-full"
+                placeholder="je@email.com"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                Wachtwoord
               </label>
               <Input
                 id="password"
@@ -115,40 +81,26 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="w-full"
+                placeholder="Wachtwoord"
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <Link href="/forgot-password" className="text-purple-600 hover:text-purple-500">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              loading={loading}
-              className="w-full"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
+            <Button type="submit" loading={loading} className="w-full">
+              {loading ? 'Inloggen...' : 'Inloggen'}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Don't have an account?{' '}
+              Nog geen account?{' '}
               <Link href="/register" className="text-purple-600 hover:text-purple-500 font-medium">
-                Sign up for free
+                Registreren
               </Link>
             </p>
           </div>
 
-          {/* Demo credentials for development */}
           {process.env.NODE_ENV === 'development' && (
-            <div className="mt-8 p-4 bg-gray-50 rounded-md">
+            <div className="mt-6 p-4 bg-gray-50 rounded-md">
               <p className="text-sm text-gray-600 mb-2">Demo credentials:</p>
               <div className="text-xs space-y-1 text-gray-500">
                 <div>Email: admin@example.com</div>
@@ -157,13 +109,10 @@ export default function LoginPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  setEmail('admin@example.com');
-                  setPassword('admin123');
-                }}
+                onClick={() => { setEmail('admin@example.com'); setPassword('admin123'); }}
                 className="mt-2 w-full"
               >
-                Use Demo Account
+                Demo account gebruiken
               </Button>
             </div>
           )}
