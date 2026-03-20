@@ -18,8 +18,7 @@ export default function RootLayout({
   return (
     <html lang="nl" className="h-full">
       <head>
-        {/* Fluister feedback widget - TODO: add project key */}
-        {/* <script src="https://fluister.dev/widget.js" data-project="YOUR_PROJECT_KEY" data-color="#9333ea" data-lang="nl" defer></script> */}
+        <script src="https://fluister.dev/widget.js" data-project="d0315c8815c996f2fbe95a161746fd42b074fb4ea58594dd" data-color="#667eea" defer></script>
       </head>
       <body className="h-full antialiased">
         <ToastProvider>
